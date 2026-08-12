@@ -1,11 +1,12 @@
 import { cuisines } from '../data/cuisines'
 import { recipes } from '../data/recipes'
-import { nutritionFor, slotNames } from '../lib/planner'
+import { nutritionFor, scaleNutrition, slotNames } from '../lib/planner'
 import type { MealSlot, Recipe } from '../types'
 import Icon from './Icon'
 
 interface Props {
   recipe: Recipe
+  portionScale: number
   modified: boolean
   favorite: boolean
   selectedCuisine?: string
@@ -16,8 +17,8 @@ interface Props {
   onOpen: () => void
 }
 
-export default function MealCard({ recipe, modified, favorite, selectedCuisine, onCuisineChange, onReroll, onModify, onFavorite, onOpen }: Props) {
-  const n = nutritionFor(recipe, modified)
+export default function MealCard({ recipe, portionScale, modified, favorite, selectedCuisine, onCuisineChange, onReroll, onModify, onFavorite, onOpen }: Props) {
+  const n = scaleNutrition(nutritionFor(recipe, modified), portionScale)
   const original = recipe.nutrition
   const availableCuisineIds = new Set(recipes.filter((item) => item.slot === recipe.slot).map((item) => item.cuisineId))
   const available = cuisines.filter((item) => availableCuisineIds.has(item.id))
@@ -54,6 +55,7 @@ export default function MealCard({ recipe, modified, favorite, selectedCuisine, 
           </div>
         )}
         <div className="meal-card__tags">{recipe.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
+        <div className="portion-note">目标份量 × {portionScale.toFixed(2)} · 营养已同步折算</div>
         <label className="cuisine-select">
           <span>这餐想吃</span>
           <select value={selectedCuisine ?? ''} onChange={(event) => onCuisineChange(event.target.value || undefined)}>

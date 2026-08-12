@@ -1,10 +1,11 @@
 import { useEffect } from 'react'
-import { nutritionFor } from '../lib/planner'
+import { nutritionFor, scaleNutrition } from '../lib/planner'
 import type { Recipe } from '../types'
 import Icon from './Icon'
 
 interface Props {
   recipe: Recipe | null
+  portionScale: number
   modified: boolean
   onClose: () => void
   onModify: () => void
@@ -15,7 +16,7 @@ const nutrientLabels = [
   ['water', '食物含水', 'ml'], ['sodium', '钠', 'mg'], ['calcium', '钙', 'mg'], ['iron', '铁', 'mg'], ['vitaminA', '维生素 A', 'μg RAE'], ['vitaminC', '维生素 C', 'mg'],
 ] as const
 
-export default function RecipeDrawer({ recipe, modified, onClose, onModify }: Props) {
+export default function RecipeDrawer({ recipe, portionScale, modified, onClose, onModify }: Props) {
   useEffect(() => {
     if (!recipe) return
     const onKey = (event: KeyboardEvent) => event.key === 'Escape' && onClose()
@@ -25,7 +26,7 @@ export default function RecipeDrawer({ recipe, modified, onClose, onModify }: Pr
   }, [recipe, onClose])
 
   if (!recipe) return null
-  const n = nutritionFor(recipe, modified)
+  const n = scaleNutrition(nutritionFor(recipe, modified), portionScale)
 
   return (
     <div className="drawer-backdrop" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
@@ -33,7 +34,7 @@ export default function RecipeDrawer({ recipe, modified, onClose, onModify }: Pr
         <button className="drawer-close" onClick={onClose} aria-label="关闭详情"><Icon name="close" /></button>
         <img className="recipe-drawer__hero" src={recipe.image} alt={`${recipe.name}成品图`} />
         <div className="recipe-drawer__content">
-          <div className="drawer-kicker"><span>{recipe.cuisine}</span><span>{recipe.minutes} 分钟</span><span>{recipe.servings} 人份</span></div>
+          <div className="drawer-kicker"><span>{recipe.cuisine}</span><span>{recipe.minutes} 分钟</span><span>目标份量 × {portionScale.toFixed(2)}</span></div>
           <h2>{recipe.name}</h2>
           <p className="drawer-lead">{recipe.subtitle}</p>
           <div className={`confidence-note confidence-note--${recipe.confidence}`}>
@@ -44,7 +45,7 @@ export default function RecipeDrawer({ recipe, modified, onClose, onModify }: Pr
           <section className="drawer-section">
             <div className="section-heading"><span>01</span><h3>准备食材</h3></div>
             <div className="ingredient-list">
-              {recipe.ingredients.map((item) => <div key={item.name}><span>{item.name}{item.note && <small>{item.note}</small>}</span><b>{item.amount}</b></div>)}
+              {recipe.ingredients.map((item) => <div key={item.name}><span>{item.name}{item.note && <small>{item.note}</small>}</span><b>{item.amount} × {portionScale.toFixed(2)}</b></div>)}
             </div>
           </section>
 
