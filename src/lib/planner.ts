@@ -26,6 +26,12 @@ export function aggregateNutrition(plan: Plan, modified: Set<string>): Nutrition
   }, zeroNutrition())
 }
 
+export function scaleNutrition(nutrition: Nutrition, factor: number): Nutrition {
+  const scaled = zeroNutrition()
+  for (const key of Object.keys(scaled) as (keyof Nutrition)[]) scaled[key] = nutrition[key] * factor
+  return scaled
+}
+
 function hashSeed(input: string): number {
   let hash = 2166136261
   for (let i = 0; i < input.length; i += 1) hash = Math.imul(hash ^ input.charCodeAt(i), 16777619)
@@ -39,13 +45,16 @@ function seededIndex(seed: string, length: number): number {
   return Math.abs(x) % length
 }
 
-function scoreRecipe(recipe: Recipe, goal: Goal, selectedCuisine?: string): number {
+const slotShare: Record<MealSlot, number> = { breakfast: 0.27, lunch: 0.36, dinner: 0.37 }
+
+function scoreRecipe(recipe: Recipe, goal: Goal, selectedCuisine?: string, targetKcal = goalProfiles[goal].targetKcal): number {
   let score = 0
   if (selectedCuisine && recipe.cuisineId === selectedCuisine) score += 120
   const proteinPer100 = recipe.nutrition.protein / recipe.nutrition.kcal * 100
   if (goal === 'fatLoss') score += proteinPer100 * 3 + recipe.nutrition.fiber - recipe.nutrition.fat * 0.25
   if (goal === 'muscleGain') score += recipe.nutrition.protein * 0.9 + recipe.nutrition.kcal * 0.015
   if (goal === 'balanced') score += recipe.nutrition.fiber + recipe.nutrition.protein * 0.3 - Math.abs(recipe.nutrition.kcal - 580) * 0.01
+  score -= Math.abs(recipe.nutrition.kcal - targetKcal * slotShare[recipe.slot]) * 0.08
   return score
 }
 
@@ -56,20 +65,29 @@ export function candidatesFor(slot: MealSlot, cuisineId?: string): Recipe[] {
   return exact.length ? exact : slotRecipes
 }
 
-export function pickRecipe(slot: MealSlot, goal: Goal, seed: string, cuisineId?: string, excludeId?: string): Recipe {
+export function pickRecipe(slot: MealSlot, goal: Goal, seed: string, cuisineId?: string, excludeId?: string, targetKcal = goalProfiles[goal].targetKcal): Recipe {
   const candidates = candidatesFor(slot, cuisineId).filter((recipe) => recipe.id !== excludeId)
   const pool = candidates.length ? candidates : candidatesFor(slot, cuisineId)
-  const ranked = [...pool].sort((a, b) => scoreRecipe(b, goal, cuisineId) - scoreRecipe(a, goal, cuisineId))
+  const ranked = [...pool].sort((a, b) => scoreRecipe(b, goal, cuisineId, targetKcal) - scoreRecipe(a, goal, cuisineId, targetKcal))
   const shortlist = ranked.slice(0, Math.min(3, ranked.length))
   return shortlist[seededIndex(seed, shortlist.length)]
 }
 
-export function generatePlan(goal: Goal, seed: string, cuisineBySlot: Partial<Record<MealSlot, string>> = {}): Plan {
-  return {
-    breakfast: pickRecipe('breakfast', goal, `${seed}:breakfast`, cuisineBySlot.breakfast).id,
-    lunch: pickRecipe('lunch', goal, `${seed}:lunch`, cuisineBySlot.lunch).id,
-    dinner: pickRecipe('dinner', goal, `${seed}:dinner`, cuisineBySlot.dinner).id,
-  }
+export function generatePlan(goal: Goal, seed: string, cuisineBySlot: Partial<Record<MealSlot, string>> = {}, targetKcal = goalProfiles[goal].targetKcal): Plan {
+  const pools = slots.map((slot) => candidatesFor(slot, cuisineBySlot[slot]))
+  const combinations = pools[0].flatMap((breakfast) => pools[1].flatMap((lunch) => pools[2].map((dinner) => ({ breakfast, lunch, dinner }))))
+  const ranked = combinations.map((combo) => {
+    const kcal = combo.breakfast.nutrition.kcal + combo.lunch.nutrition.kcal + combo.dinner.nutrition.kcal
+    const protein = combo.breakfast.nutrition.protein + combo.lunch.nutrition.protein + combo.dinner.nutrition.protein
+    const fiber = combo.breakfast.nutrition.fiber + combo.lunch.nutrition.fiber + combo.dinner.nutrition.fiber
+    const sodium = combo.breakfast.nutrition.sodium + combo.lunch.nutrition.sodium + combo.dinner.nutrition.sodium
+    const cuisineBonus = new Set([combo.breakfast.cuisineId, combo.lunch.cuisineId, combo.dinner.cuisineId]).size * 8
+    const score = -Math.abs(kcal - targetKcal) * 0.22 - Math.max(0, goalProfiles[goal].targetProtein - protein) * 1.4 + Math.min(fiber, 32) * 0.45 - Math.max(0, sodium - 2000) * 0.025 + cuisineBonus
+    return { combo, score }
+  }).sort((a, b) => b.score - a.score)
+  const shortlist = ranked.slice(0, Math.min(4, ranked.length))
+  const chosen = shortlist[seededIndex(`${seed}:${targetKcal}`, shortlist.length)].combo
+  return { breakfast: chosen.breakfast.id, lunch: chosen.lunch.id, dinner: chosen.dinner.id }
 }
 
 export function completion(total: Nutrition, goal: Goal, targetKcal?: number) {

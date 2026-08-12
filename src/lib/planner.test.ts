@@ -6,6 +6,13 @@ describe('meal planner', () => {
     expect(generatePlan('balanced', '2026-08-12')).toEqual(generatePlan('balanced', '2026-08-12'))
   })
 
+  it('rebuilds the plan around the selected daily calorie target', () => {
+    const low = generatePlan('balanced', 'same-day', {}, 1300)
+    const high = generatePlan('balanced', 'same-day', {}, 2600)
+    expect(low).not.toEqual(high)
+    expect(aggregateNutrition(high, new Set()).kcal).toBeGreaterThan(aggregateNutrition(low, new Set()).kcal)
+  })
+
   it('respects an available cuisine for the selected meal slot', () => {
     expect(pickRecipe('lunch', 'balanced', 'x', 'thai').cuisineId).toBe('thai')
   })
