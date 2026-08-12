@@ -1,11 +1,26 @@
 import type { Cuisine } from '../types'
 
+const search = (sites: string[], query: string) => `https://www.google.com/search?q=${encodeURIComponent(`(${sites.map((site) => `site:${site}`).join(' OR ')}) ${query} 食谱 做法`)}`
+const video = (query: string) => `https://search.bilibili.com/all?keyword=${encodeURIComponent(`${query} 正宗做法`)}`
+
 const china = (id: string, name: string, group: string, representative: string, live = false): Cuisine => ({
   id, name, group, representative, live, region: 'china',
+  recipeUrl: search(['xiachufang.com', 'chinasichuanfood.com', 'thewoksoflife.com'], representative),
+  videoUrl: video(`${name} ${representative}`),
+  communityLinks: [
+    { label: '小红书实拍', url: `https://www.xiaohongshu.com/search_result?keyword=${encodeURIComponent(`${name} ${representative} 做法`)}`, type: 'article' },
+    { label: '抖音演示', url: `https://www.douyin.com/search/${encodeURIComponent(`${name} ${representative} 做法`)}`, type: 'video' },
+  ],
 })
 
 const world = (id: string, name: string, group: string, representative: string, live = false): Cuisine => ({
   id, name, group, representative, live, region: 'world',
+  recipeUrl: search(['bbcgoodfood.com', 'seriouseats.com', 'tasteatlas.com'], `${name} ${representative}`),
+  videoUrl: `https://www.youtube.com/results?search_query=${encodeURIComponent(`${name} ${representative} authentic recipe`)}`,
+  communityLinks: [
+    { label: 'Instagram 实拍', url: `https://www.instagram.com/explore/search/keyword/?q=${encodeURIComponent(`${name} ${representative}`)}`, type: 'article' },
+    { label: 'X 讨论', url: `https://x.com/search?q=${encodeURIComponent(`${name} ${representative} recipe`)}&src=typed_query`, type: 'article' },
+  ],
 })
 
 // Coverage contract: eight major traditions + every provincial-level region +
