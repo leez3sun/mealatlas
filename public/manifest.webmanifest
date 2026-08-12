@@ -1,0 +1,10 @@
+{
+  "name": "味衡 MealAtlas",
+  "short_name": "味衡",
+  "description": "看得懂营养、改得动食谱的一日三餐终端。",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f2eee5",
+  "theme_color": "#17221b",
+  "icons": []
+}
