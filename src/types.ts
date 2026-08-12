@@ -63,6 +63,9 @@ export interface Cuisine {
   region: 'china' | 'world'
   representative: string
   live: boolean
+  recipeUrl: string
+  videoUrl: string
+  communityLinks: TutorialLink[]
 }
 
 export type Plan = Record<MealSlot, string>

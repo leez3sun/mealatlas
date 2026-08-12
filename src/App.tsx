@@ -5,7 +5,7 @@ import MealCard from './components/MealCard'
 import NutritionGauge from './components/NutritionGauge'
 import RecipeDrawer from './components/RecipeDrawer'
 import { recipeById } from './data/recipes'
-import { aggregateNutrition, generatePlan, goalProfiles, pickRecipe, slots } from './lib/planner'
+import { aggregateNutrition, generatePlan, goalProfiles, pickRecipe, scaleNutrition, slots } from './lib/planner'
 import type { Cuisine, Goal, MealSlot, Plan, Recipe } from './types'
 
 const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000)
@@ -22,19 +22,21 @@ function App() {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null)
   const [rerollCount, setRerollCount] = useState(0)
   const [toast, setToast] = useState<string | null>(null)
-  const total = useMemo(() => aggregateNutrition(plan, modified), [plan, modified])
+  const baseTotal = useMemo(() => aggregateNutrition(plan, modified), [plan, modified])
+  const portionScale = targetKcal / baseTotal.kcal
+  const total = useMemo(() => scaleNutrition(baseTotal, portionScale), [baseTotal, portionScale])
 
   const changeGoal = (next: Goal) => {
     setGoal(next)
     setTargetKcal(goalProfiles[next].targetKcal)
-    setPlan(generatePlan(next, `${dateSeed}:${rerollCount + 1}`, cuisineBySlot))
+    setPlan(generatePlan(next, `${dateSeed}:${rerollCount + 1}`, cuisineBySlot, goalProfiles[next].targetKcal))
     setModified(new Set())
   }
 
   const regenerate = () => {
     const next = rerollCount + 1
     setRerollCount(next)
-    setPlan(generatePlan(goal, `${dateSeed}:full:${next}`, cuisineBySlot))
+    setPlan(generatePlan(goal, `${dateSeed}:full:${next}`, cuisineBySlot, targetKcal))
     setModified(new Set())
     showToast('已重新调好明日三餐')
   }
@@ -42,7 +44,7 @@ function App() {
   const reroll = (slot: MealSlot) => {
     const current = plan[slot]
     const nextCount = rerollCount + 1
-    const next = pickRecipe(slot, goal, `${dateSeed}:${slot}:${nextCount}`, cuisineBySlot[slot], current)
+    const next = pickRecipe(slot, goal, `${dateSeed}:${slot}:${nextCount}`, cuisineBySlot[slot], current, targetKcal)
     setRerollCount(nextCount)
     setPlan((value) => ({ ...value, [slot]: next.id }))
     setModified((value) => { const copy = new Set(value); copy.delete(current); return copy })
@@ -52,7 +54,7 @@ function App() {
     const nextCuisine = { ...cuisineBySlot, [slot]: cuisineId }
     if (!cuisineId) delete nextCuisine[slot]
     setCuisineBySlot(nextCuisine)
-    const recipe = pickRecipe(slot, goal, `${dateSeed}:${slot}:cuisine:${cuisineId ?? 'all'}`, cuisineId, plan[slot])
+    const recipe = pickRecipe(slot, goal, `${dateSeed}:${slot}:cuisine:${cuisineId ?? 'all'}`, cuisineId, plan[slot], targetKcal)
     setPlan((value) => ({ ...value, [slot]: recipe.id }))
   }
 
@@ -75,11 +77,20 @@ function App() {
 
   const previewCuisine = (cuisine: Cuisine) => {
     if (!cuisine.live) {
-      showToast(`${cuisine.name}已收录索引，演示食谱仍在校对中`)
+      setSelectedCuisine(cuisine)
       return
     }
     const recipe = [...recipeById.values()].find((item) => item.cuisineId === cuisine.id)
     if (recipe) setSelectedRecipe(recipe)
+  }
+
+  const [selectedCuisine, setSelectedCuisine] = useState<Cuisine | null>(null)
+
+  const changeTargetKcal = (nextTarget: number) => {
+    setTargetKcal(nextTarget)
+    setPlan(generatePlan(goal, `${dateSeed}:target:${nextTarget}`, cuisineBySlot, nextTarget))
+    setModified(new Set())
+    showToast(`已按 ${nextTarget} kcal 重新搭配三餐`)
   }
 
   return (
@@ -119,14 +130,15 @@ function App() {
 
           <div className="target-strip">
             <div><span>每日能量目标</span><b>{targetKcal} kcal</b></div>
-            <input aria-label="每日能量目标" type="range" min="1300" max="2600" step="50" value={targetKcal} onChange={(event) => setTargetKcal(Number(event.target.value))} />
+            <input aria-label="每日能量目标" type="range" min="1300" max="2600" step="50" value={targetKcal} onInput={(event) => changeTargetKcal(Number(event.currentTarget.value))} />
+            <div className="target-controls"><button aria-label="每日能量目标减少 50 千卡" onClick={() => changeTargetKcal(Math.max(1300, targetKcal - 50))}>−</button><button aria-label="每日能量目标增加 50 千卡" onClick={() => changeTargetKcal(Math.min(2600, targetKcal + 50))}>＋</button></div>
             <span>可按个人需求调整 · 非医疗处方</span>
           </div>
 
           <div className="meal-grid">
             {slots.map((slot) => {
               const recipe = recipeById.get(plan[slot])!
-              return <MealCard key={slot} recipe={recipe} modified={modified.has(recipe.id)} favorite={favorites.has(recipe.id)} selectedCuisine={cuisineBySlot[slot]} onCuisineChange={(value) => updateCuisine(slot, value)} onReroll={() => reroll(slot)} onModify={() => toggleModified(recipe.id)} onFavorite={() => toggleFavorite(recipe.id)} onOpen={() => setSelectedRecipe(recipe)} />
+              return <MealCard key={slot} recipe={recipe} portionScale={portionScale} modified={modified.has(recipe.id)} favorite={favorites.has(recipe.id)} selectedCuisine={cuisineBySlot[slot]} onCuisineChange={(value) => updateCuisine(slot, value)} onReroll={() => reroll(slot)} onModify={() => toggleModified(recipe.id)} onFavorite={() => toggleFavorite(recipe.id)} onOpen={() => setSelectedRecipe(recipe)} />
             })}
           </div>
 
@@ -160,7 +172,8 @@ function App() {
 
       <footer><div className="brand brand--footer"><span>味</span><div><b>MEALATLAS</b><small>吃想吃的，也懂自己吃了什么。</small></div></div><p>Open-source prototype · MIT License · Nutrition is estimated, not medical advice.</p><a href="#top">回到顶部 ↑</a></footer>
 
-      <RecipeDrawer recipe={selectedRecipe} modified={selectedRecipe ? modified.has(selectedRecipe.id) : false} onClose={() => setSelectedRecipe(null)} onModify={() => selectedRecipe && toggleModified(selectedRecipe.id)} />
+      <RecipeDrawer recipe={selectedRecipe} portionScale={portionScale} modified={selectedRecipe ? modified.has(selectedRecipe.id) : false} onClose={() => setSelectedRecipe(null)} onModify={() => selectedRecipe && toggleModified(selectedRecipe.id)} />
+      {selectedCuisine && <div className="drawer-backdrop" onMouseDown={(event) => event.target === event.currentTarget && setSelectedCuisine(null)}><aside className="source-drawer" role="dialog" aria-modal="true" aria-label={`${selectedCuisine.name}代表菜来源`}><button className="drawer-close" onClick={() => setSelectedCuisine(null)} aria-label="关闭"><Icon name="close" /></button><span className="section-label">SOURCED RECIPE / 已收录来源</span><h2>{selectedCuisine.name}</h2><p className="source-drawer__dish">代表菜：{selectedCuisine.representative}</p><p>当前条目已完成名称与菜系归属核对。为避免复制作者内容，这里提供限定到可靠食谱站点的图文检索、视频教程和社区实拍入口。</p><div className="source-drawer__actions"><a className="button button--accent" href={selectedCuisine.recipeUrl} target="_blank" rel="noreferrer"><Icon name="book" /> 检索图文做法</a><a className="button button--soft" href={selectedCuisine.videoUrl} target="_blank" rel="noreferrer"><Icon name="play" /> 检索视频教程</a>{selectedCuisine.communityLinks.map((link) => <a className="button button--soft" href={link.url} target="_blank" rel="noreferrer" key={link.url}><Icon name={link.type === 'video' ? 'play' : 'arrow'} /> {link.label}</a>)}</div><small>优先来源：中国地方菜使用下厨房、China Sichuan Food、The Woks of Life；世界菜系使用 Good Food、Serious Eats、TasteAtlas。社区内容只用于交叉验证外观与地方习惯，不直接复制图片或正文。</small></aside></div>}
       {toast && <div className="toast" role="status"><Icon name="check" size={18} />{toast}</div>}
     </div>
   )
