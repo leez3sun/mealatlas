@@ -76,15 +76,9 @@ function App() {
   }
 
   const previewCuisine = (cuisine: Cuisine) => {
-    if (!cuisine.live) {
-      setSelectedCuisine(cuisine)
-      return
-    }
     const recipe = [...recipeById.values()].find((item) => item.cuisineId === cuisine.id)
     if (recipe) setSelectedRecipe(recipe)
   }
-
-  const [selectedCuisine, setSelectedCuisine] = useState<Cuisine | null>(null)
 
   const changeTargetKcal = (nextTarget: number) => {
     setTargetKcal(nextTarget)
@@ -173,7 +167,6 @@ function App() {
       <footer><div className="brand brand--footer"><span>味</span><div><b>MEALATLAS</b><small>吃想吃的，也懂自己吃了什么。</small></div></div><p>Open-source prototype · MIT License · Nutrition is estimated, not medical advice.</p><a href="#top">回到顶部 ↑</a></footer>
 
       <RecipeDrawer recipe={selectedRecipe} portionScale={portionScale} modified={selectedRecipe ? modified.has(selectedRecipe.id) : false} onClose={() => setSelectedRecipe(null)} onModify={() => selectedRecipe && toggleModified(selectedRecipe.id)} />
-      {selectedCuisine && <div className="drawer-backdrop" onMouseDown={(event) => event.target === event.currentTarget && setSelectedCuisine(null)}><aside className="source-drawer" role="dialog" aria-modal="true" aria-label={`${selectedCuisine.name}代表菜来源`}><button className="drawer-close" onClick={() => setSelectedCuisine(null)} aria-label="关闭"><Icon name="close" /></button><span className="section-label">SOURCED RECIPE / 已收录来源</span><h2>{selectedCuisine.name}</h2><p className="source-drawer__dish">代表菜：{selectedCuisine.representative}</p><p>当前条目已完成名称与菜系归属核对。为避免复制作者内容，这里提供限定到可靠食谱站点的图文检索、视频教程和社区实拍入口。</p><div className="source-drawer__actions"><a className="button button--accent" href={selectedCuisine.recipeUrl} target="_blank" rel="noreferrer"><Icon name="book" /> 检索图文做法</a><a className="button button--soft" href={selectedCuisine.videoUrl} target="_blank" rel="noreferrer"><Icon name="play" /> 检索视频教程</a>{selectedCuisine.communityLinks.map((link) => <a className="button button--soft" href={link.url} target="_blank" rel="noreferrer" key={link.url}><Icon name={link.type === 'video' ? 'play' : 'arrow'} /> {link.label}</a>)}</div><small>优先来源：中国地方菜使用下厨房、China Sichuan Food、The Woks of Life；世界菜系使用 Good Food、Serious Eats、TasteAtlas。社区内容只用于交叉验证外观与地方习惯，不直接复制图片或正文。</small></aside></div>}
       {toast && <div className="toast" role="status"><Icon name="check" size={18} />{toast}</div>}
     </div>
   )
