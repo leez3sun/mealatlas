@@ -1,9 +1,10 @@
 import type { Recipe } from '../types'
+import { catalogRecipes } from './catalogRecipes'
 
 const video = (query: string) => `https://search.bilibili.com/all?keyword=${encodeURIComponent(query)}`
 const article = (query: string) => `https://www.xiachufang.com/search/?keyword=${encodeURIComponent(query)}`
 
-export const recipes: Recipe[] = [
+const featuredRecipes: Recipe[] = [
   {
     id: 'oat-congee', name: '豆浆燕麦暖粥', subtitle: '茶叶蛋 · 燕麦米 · 清爽葱香', cuisineId: 'beijing', cuisine: '北京家常', region: 'china', slot: 'breakfast',
     image: './images/oat-congee.webp', minutes: 18, difficulty: '简单', servings: 1, tags: ['高纤', '暖胃', '少油'], allergens: ['大豆', '蛋'], confidence: 'estimated',
@@ -125,5 +126,7 @@ export const recipes: Recipe[] = [
     tutorials: [{ label: 'B站视频检索', url: video('地中海烤鱼 鹰嘴豆'), type: 'video' }, { label: '图文检索', url: article('香草烤鱼'), type: 'article' }],
   },
 ]
+
+export const recipes: Recipe[] = [...featuredRecipes, ...catalogRecipes]
 
 export const recipeById = new Map(recipes.map((recipe) => [recipe.id, recipe]))

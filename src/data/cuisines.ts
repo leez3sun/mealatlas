@@ -3,7 +3,7 @@ import type { Cuisine } from '../types'
 const search = (sites: string[], query: string) => `https://www.google.com/search?q=${encodeURIComponent(`(${sites.map((site) => `site:${site}`).join(' OR ')}) ${query} 食谱 做法`)}`
 const video = (query: string) => `https://search.bilibili.com/all?keyword=${encodeURIComponent(`${query} 正宗做法`)}`
 
-const china = (id: string, name: string, group: string, representative: string, live = false): Cuisine => ({
+const china = (id: string, name: string, group: string, representative: string, live = true): Cuisine => ({
   id, name, group, representative, live, region: 'china',
   recipeUrl: search(['xiachufang.com', 'chinasichuanfood.com', 'thewoksoflife.com'], representative),
   videoUrl: video(`${name} ${representative}`),
@@ -13,7 +13,7 @@ const china = (id: string, name: string, group: string, representative: string, 
   ],
 })
 
-const world = (id: string, name: string, group: string, representative: string, live = false): Cuisine => ({
+const world = (id: string, name: string, group: string, representative: string, live = true): Cuisine => ({
   id, name, group, representative, live, region: 'world',
   recipeUrl: search(['bbcgoodfood.com', 'seriouseats.com', 'tasteatlas.com'], `${name} ${representative}`),
   videoUrl: `https://www.youtube.com/results?search_query=${encodeURIComponent(`${name} ${representative} authentic recipe`)}`,
@@ -24,8 +24,8 @@ const world = (id: string, name: string, group: string, representative: string, 
 })
 
 // Coverage contract: eight major traditions + every provincial-level region +
-// important cross-regional traditions. “Live” means a professionally reviewable
-// seed recipe exists in the demo; catalog-only entries are never silently faked.
+// important cross-regional traditions. Every entry has an in-app recipe; all
+// nutrition values are labelled as estimates until they receive editorial review.
 export const cuisines: Cuisine[] = [
   china('lu', '鲁菜', '八大菜系', '葱烧海参'),
   china('chuan', '川菜', '八大菜系', '宫保鸡丁', true),
