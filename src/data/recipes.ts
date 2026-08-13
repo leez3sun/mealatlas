@@ -27,7 +27,7 @@ export const recipes: Recipe[] = [
   },
   {
     id: 'greek-yogurt', name: '希腊酸奶晨光碗', subtitle: '莓果 · 核桃 · 燕麦', cuisineId: 'greek', cuisine: '希腊风味', region: 'world', slot: 'breakfast',
-    image: './images/oat-congee.webp', minutes: 6, difficulty: '简单', servings: 1, tags: ['免开火', '高钙', '快手'], allergens: ['乳', '坚果'], confidence: 'estimated',
+    image: './images/greek-yogurt.webp', minutes: 6, difficulty: '简单', servings: 1, tags: ['免开火', '高钙', '快手'], allergens: ['乳', '坚果'], confidence: 'estimated',
     ingredients: [{ name: '无糖希腊酸奶', amount: '220 g' }, { name: '蓝莓与草莓', amount: '120 g' }, { name: '燕麦片', amount: '35 g' }, { name: '核桃', amount: '12 g' }, { name: '奇亚籽', amount: '6 g' }],
     steps: ['酸奶装入浅碗，用勺背轻轻铺平。', '莓果洗净沥干，草莓切四瓣，与燕麦片分区铺在酸奶上。', '撒核桃和奇亚籽；若使用冷冻莓果，提前 10 分钟回温。'],
     nutrition: { kcal: 451, protein: 29, carbs: 52, fat: 16, fiber: 9.5, water: 276, sodium: 128, calcium: 344, iron: 3.1, vitaminA: 52, vitaminC: 71 },
@@ -36,7 +36,7 @@ export const recipes: Recipe[] = [
   },
   {
     id: 'jiangnan-rice-roll', name: '江南菜饭蛋卷', subtitle: '糙米 · 青菜 · 菌菇', cuisineId: 'zhe', cuisine: '浙菜灵感', region: 'china', slot: 'breakfast',
-    image: './images/hunan-fish.webp', minutes: 22, difficulty: '适中', servings: 1, tags: ['全谷', '一锅出', '蔬菜'], allergens: ['蛋', '大豆'], confidence: 'estimated',
+    image: './images/jiangnan-rice-roll.webp', minutes: 22, difficulty: '适中', servings: 1, tags: ['全谷', '一锅出', '蔬菜'], allergens: ['蛋', '大豆'], confidence: 'estimated',
     ingredients: [{ name: '熟糙米', amount: '120 g' }, { name: '鸡蛋', amount: '2 个' }, { name: '青菜', amount: '120 g' }, { name: '香菇', amount: '50 g' }, { name: '豆腐干', amount: '35 g' }, { name: '菜籽油', amount: '5 g' }],
     steps: ['香菇、青菜与豆腐干切细丁；锅中放 3 g 油，先炒香菇，再下青菜和糙米炒匀。', '鸡蛋打散，平底锅用余油摊成薄蛋皮。', '菜饭铺在蛋皮上卷紧，静置 1 分钟后切段。'],
     nutrition: { kcal: 468, protein: 25, carbs: 51, fat: 19, fiber: 7.4, water: 274, sodium: 486, calcium: 288, iron: 5.9, vitaminA: 338, vitaminC: 36 },
@@ -63,7 +63,7 @@ export const recipes: Recipe[] = [
   },
   {
     id: 'beijing-wrap', name: '北京杂粮鸡肉卷', subtitle: '甜面酱风味 · 黄瓜 · 鸡丝', cuisineId: 'beijing', cuisine: '北京菜灵感', region: 'china', slot: 'lunch',
-    image: './images/sichuan-chicken.webp', minutes: 20, difficulty: '简单', servings: 1, tags: ['便当', '高蛋白', '杂粮'], allergens: ['小麦', '大豆'], confidence: 'estimated',
+    image: './images/beijing-wrap.webp', minutes: 20, difficulty: '简单', servings: 1, tags: ['便当', '高蛋白', '杂粮'], allergens: ['小麦', '大豆'], confidence: 'estimated',
     ingredients: [{ name: '全麦卷饼', amount: '2 张（约 90 g）' }, { name: '熟鸡胸丝', amount: '150 g' }, { name: '黄瓜', amount: '120 g' }, { name: '胡萝卜', amount: '70 g' }, { name: '低糖甜面酱', amount: '15 g' }, { name: '芝麻', amount: '5 g' }],
     steps: ['黄瓜、胡萝卜切细丝；鸡胸沿纹理撕丝。', '卷饼在干锅中每面加热 20 秒，薄薄刷甜面酱。', '铺鸡丝和蔬菜，撒芝麻，两侧折入后卷紧；切半即可装便当。'],
     nutrition: { kcal: 641, protein: 56, carbs: 76, fat: 14, fiber: 10.1, water: 308, sodium: 893, calcium: 164, iron: 5.7, vitaminA: 624, vitaminC: 18 },
@@ -90,7 +90,7 @@ export const recipes: Recipe[] = [
   },
   {
     id: 'huaiyang-chicken', name: '淮扬清炖鸡腿菜饭', subtitle: '鸡腿 · 菜心 · 香菇', cuisineId: 'jiangsu', cuisine: '淮扬菜', region: 'china', slot: 'dinner',
-    image: './images/hunan-fish.webp', minutes: 38, difficulty: '适中', servings: 1, tags: ['清炖', '少油', '家常'], allergens: ['大豆'], confidence: 'estimated',
+    image: './images/huaiyang-chicken.webp', minutes: 38, difficulty: '适中', servings: 1, tags: ['清炖', '少油', '家常'], allergens: ['大豆'], confidence: 'estimated',
     ingredients: [{ name: '去皮鸡腿肉', amount: '170 g' }, { name: '菜心', amount: '180 g' }, { name: '香菇', amount: '60 g' }, { name: '熟杂粮饭', amount: '140 g' }, { name: '鸡汤', amount: '300 ml' }, { name: '芝麻油', amount: '3 g' }],
     steps: ['鸡腿冷水下锅焯至浮沫出现，捞出洗净。', '鸡腿、香菇与无盐鸡汤小火炖 22 分钟；出锅前用 2 g 盐调味。', '菜心焯熟，杂粮饭装碗，放鸡腿、香菇和菜心，淋少量芝麻油。'],
     nutrition: { kcal: 604, protein: 45, carbs: 62, fat: 21, fiber: 7.9, water: 626, sodium: 722, calcium: 226, iron: 5.6, vitaminA: 356, vitaminC: 51 },
@@ -99,7 +99,7 @@ export const recipes: Recipe[] = [
   },
   {
     id: 'american-bean-bowl', name: '美洲玉米黑豆烤碗', subtitle: '黑豆 · 玉米 · 牛油果', cuisineId: 'american', cuisine: '美洲风味', region: 'world', slot: 'dinner',
-    image: './images/med-pasta.webp', minutes: 25, difficulty: '简单', servings: 1, tags: ['植物蛋白', '高纤', '一碗餐'], allergens: [], confidence: 'estimated',
+    image: './images/american-bean-bowl.webp', minutes: 25, difficulty: '简单', servings: 1, tags: ['植物蛋白', '高纤', '一碗餐'], allergens: [], confidence: 'estimated',
     ingredients: [{ name: '熟黑豆', amount: '150 g' }, { name: '玉米粒', amount: '100 g' }, { name: '熟藜麦', amount: '120 g' }, { name: '彩椒', amount: '150 g' }, { name: '牛油果', amount: '50 g' }, { name: '青柠', amount: '半个' }],
     steps: ['玉米和彩椒拌烟熏红椒粉，220°C 烤 12 分钟。', '黑豆用少量水、孜然和蒜末煮热，轻压约四分之一形成浓稠口感。', '藜麦垫底，码入黑豆与烤蔬菜，放牛油果，挤青柠汁。'],
     nutrition: { kcal: 672, protein: 27, carbs: 111, fat: 17, fiber: 27.2, water: 393, sodium: 328, calcium: 151, iron: 9.2, vitaminA: 224, vitaminC: 198 },
@@ -108,7 +108,7 @@ export const recipes: Recipe[] = [
   },
   {
     id: 'borscht', name: '俄式甜菜牛肉汤', subtitle: '甜菜根 · 牛腱 · 黑麦面包', cuisineId: 'russian', cuisine: '俄国菜', region: 'world', slot: 'dinner',
-    image: './images/tom-yum.webp', minutes: 52, difficulty: '适中', servings: 1, tags: ['暖汤', '铁元素', '蔬菜'], allergens: ['小麦', '乳'], confidence: 'estimated',
+    image: './images/borscht.webp', minutes: 52, difficulty: '适中', servings: 1, tags: ['暖汤', '铁元素', '蔬菜'], allergens: ['小麦', '乳'], confidence: 'estimated',
     ingredients: [{ name: '牛腱肉', amount: '130 g' }, { name: '甜菜根', amount: '160 g' }, { name: '卷心菜', amount: '150 g' }, { name: '番茄', amount: '120 g' }, { name: '土豆', amount: '100 g' }, { name: '黑麦面包', amount: '60 g' }, { name: '酸奶', amount: '20 g' }],
     steps: ['牛腱切 2 cm 块，冷水焯净；加 600 ml 水和月桂叶小火炖 30 分钟。', '甜菜、土豆切条，番茄切块，与卷心菜分次入锅，再煮 15 分钟。', '用黑胡椒、少量盐和醋调出酸甜平衡；盛碗后点无糖酸奶，配黑麦面包。'],
     nutrition: { kcal: 652, protein: 43, carbs: 82, fat: 18, fiber: 14.8, water: 774, sodium: 786, calcium: 189, iron: 8.6, vitaminA: 138, vitaminC: 93 },
@@ -117,7 +117,7 @@ export const recipes: Recipe[] = [
   },
   {
     id: 'med-fish-plate', name: '地中海香草鱼盘', subtitle: '白身鱼 · 鹰嘴豆 · 番茄', cuisineId: 'mediterranean', cuisine: '地中海饮食', region: 'world', slot: 'dinner',
-    image: './images/hunan-fish.webp', minutes: 29, difficulty: '简单', servings: 1, tags: ['高蛋白', '地中海', '橄榄油'], allergens: ['鱼'], confidence: 'estimated',
+    image: './images/med-fish-plate.webp', minutes: 29, difficulty: '简单', servings: 1, tags: ['高蛋白', '地中海', '橄榄油'], allergens: ['鱼'], confidence: 'estimated',
     ingredients: [{ name: '白身鱼', amount: '180 g' }, { name: '熟鹰嘴豆', amount: '120 g' }, { name: '番茄', amount: '180 g' }, { name: '菠菜', amount: '150 g' }, { name: '橄榄油', amount: '10 g' }, { name: '柠檬', amount: '半个' }],
     steps: ['鱼擦干，抹柠檬皮屑、黑胡椒和 4 g 橄榄油，200°C 烤 10–12 分钟。', '余油炒软番茄，加入鹰嘴豆和菠菜，翻炒至菠菜刚塌。', '蔬菜豆类垫底，放烤鱼，挤柠檬汁并撒欧芹。'],
     nutrition: { kcal: 591, protein: 52, carbs: 50, fat: 21, fiber: 15.1, water: 481, sodium: 486, calcium: 248, iron: 8.4, vitaminA: 714, vitaminC: 86 },
