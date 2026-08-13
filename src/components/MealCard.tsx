@@ -26,7 +26,7 @@ export default function MealCard({ recipe, portionScale, modified, favorite, sel
   return (
     <article className={`meal-card ${modified ? 'meal-card--modified' : ''}`}>
       <div className="meal-card__photo" onClick={onOpen} role="button" tabIndex={0} onKeyDown={(event) => event.key === 'Enter' && onOpen()}>
-        <img src={recipe.image} alt={`${recipe.name}的自然光成品图`} />
+        <img src={recipe.image} alt={`${recipe.name}的菜谱封面或成品图`} />
         <div className="meal-card__photo-top">
           <span>{slotNames[recipe.slot]}</span>
           <button className={`icon-button ${favorite ? 'is-active' : ''}`} onClick={(event) => { event.stopPropagation(); onFavorite() }} aria-label={favorite ? '取消收藏' : '收藏食谱'}>

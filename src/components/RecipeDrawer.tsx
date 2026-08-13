@@ -32,7 +32,7 @@ export default function RecipeDrawer({ recipe, portionScale, modified, onClose, 
     <div className="drawer-backdrop" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
       <aside className="recipe-drawer" role="dialog" aria-modal="true" aria-label={`${recipe.name}食谱详情`}>
         <button className="drawer-close" onClick={onClose} aria-label="关闭详情"><Icon name="close" /></button>
-        <img className="recipe-drawer__hero" src={recipe.image} alt={`${recipe.name}成品图`} />
+        <img className="recipe-drawer__hero" src={recipe.image} alt={`${recipe.name}的菜谱封面或成品图`} />
         <div className="recipe-drawer__content">
           <div className="drawer-kicker"><span>{recipe.cuisine}</span><span>{recipe.minutes} 分钟</span><span>目标份量 × {portionScale.toFixed(2)}</span></div>
           <h2>{recipe.name}</h2>

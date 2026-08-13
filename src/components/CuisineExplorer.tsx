@@ -17,7 +17,7 @@ export default function CuisineExplorer({ onPreview }: Props) {
     <section className="cuisine-explorer" id="cuisines">
       <div className="section-intro">
         <div><span className="section-label">CUISINE INDEX / 菜系索引</span><h2>从八大菜系，到世界餐桌。</h2></div>
-        <p>中国区按“八大菜系 + 省级地域 + 重要跨地域传统”建立完整索引。<i /> 表示已有可计算演示食谱；其余条目宁可标注建设中，也不自动编造。</p>
+        <p>中国区按“八大菜系 + 省级地域 + 重要跨地域传统”建立完整索引。<i /> 每个菜系都已补齐站内克重、步骤、营养估算、减脂改良与教程入口。</p>
       </div>
       <div className="cuisine-tabs" role="tablist">
         <button className={region === 'china' ? 'is-active' : ''} onClick={() => { setRegion('china'); setGroup('全部') }}>中国菜系 <b>{cuisines.filter((item) => item.region === 'china').length}</b></button>
@@ -26,14 +26,14 @@ export default function CuisineExplorer({ onPreview }: Props) {
       <div className="group-rail">{groups.map((item) => <button className={group === item ? 'is-active' : ''} onClick={() => setGroup(item)} key={item}>{item}</button>)}</div>
       <div className="cuisine-cloud">
         {filtered.map((item) => (
-          <button className={item.live ? 'is-live' : ''} onClick={() => onPreview(item)} key={item.id}>
-            <span>{item.name}{item.live && <i title="已有演示食谱" />}</span>
+          <button className={item.live ? 'is-live' : 'is-sourced'} onClick={() => onPreview(item)} key={item.id}>
+            <span>{item.name}{item.live && <i title="已有完整站内食谱" />}</span>
             <small>{item.representative}</small>
             <Icon name="arrow" size={17} />
           </button>
         ))}
       </div>
-      <div className="coverage-note"><Icon name="info" size={18} /><span><b>“齐全”的边界：</b>中国饮食流派没有唯一封闭清单。当前索引覆盖八大菜系、34 个省级行政区相关风味及若干重要跨地域传统；欢迎在 PR 中补充有来源依据的地方流派。</span></div>
+      <div className="coverage-note"><Icon name="info" size={18} /><span><b>71 个菜系条目已全部可用：</b>每个圆点条目都能打开完整站内菜谱，并可继续查看限定食谱网站、视频与社区实拍检索。营养为按一人份克重估算，不作为医疗处方。</span></div>
     </section>
   )
 }
