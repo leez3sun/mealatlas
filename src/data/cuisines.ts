@@ -69,7 +69,7 @@ export const cuisines: Cuisine[] = [
   china('guizhou', '黔菜', '西南', '酸汤鱼'),
   china('yunnan', '滇菜', '西南', '汽锅鸡'),
   china('tibet', '西藏菜', '西南', '藏式牦牛肉'),
-  china('ethnic', '民族风味', '跨地域', '壮、傣、回、维、朝鲜族等风味'),
+  china('ethnic', '民族风味', '跨地域', '多民族杂粮羊肉拼盘'),
 
   world('mediterranean', '地中海饮食', '欧洲与地中海', '烤蔬菜谷物碗', true),
   world('italian', '意大利菜', '欧洲与地中海', '全麦番茄意面', true),

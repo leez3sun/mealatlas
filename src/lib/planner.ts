@@ -45,6 +45,12 @@ function seededIndex(seed: string, length: number): number {
   return Math.abs(x) % length
 }
 
+function withoutIds(pool: Recipe[], ids: Set<string>): Recipe[] {
+  if (!ids.size) return pool
+  const filtered = pool.filter((recipe) => !ids.has(recipe.id))
+  return filtered.length ? filtered : pool
+}
+
 const slotShare: Record<MealSlot, number> = { breakfast: 0.27, lunch: 0.36, dinner: 0.37 }
 
 function scoreRecipe(recipe: Recipe, goal: Goal, selectedCuisine?: string, targetKcal = goalProfiles[goal].targetKcal): number {
@@ -65,16 +71,36 @@ export function candidatesFor(slot: MealSlot, cuisineId?: string): Recipe[] {
   return exact.length ? exact : slotRecipes
 }
 
-export function pickRecipe(slot: MealSlot, goal: Goal, seed: string, cuisineId?: string, excludeId?: string, targetKcal = goalProfiles[goal].targetKcal): Recipe {
-  const candidates = candidatesFor(slot, cuisineId).filter((recipe) => recipe.id !== excludeId)
-  const pool = candidates.length ? candidates : candidatesFor(slot, cuisineId)
+export function pickRecipe(
+  slot: MealSlot,
+  goal: Goal,
+  seed: string,
+  cuisineId?: string,
+  excludeId?: string,
+  targetKcal = goalProfiles[goal].targetKcal,
+  avoidIds: Iterable<string> = [],
+): Recipe {
+  const hardExclude = new Set(excludeId ? [excludeId] : [])
+  const preferred = candidatesFor(slot, cuisineId).filter((recipe) => !hardExclude.has(recipe.id))
+  // A one-recipe cuisine must widen to the whole meal slot before repeating itself.
+  const slotFallback = candidatesFor(slot).filter((recipe) => !hardExclude.has(recipe.id))
+  const eligible = preferred.length ? preferred : slotFallback
+  const pool = withoutIds(eligible.length ? eligible : candidatesFor(slot), new Set(avoidIds))
   const ranked = [...pool].sort((a, b) => scoreRecipe(b, goal, cuisineId, targetKcal) - scoreRecipe(a, goal, cuisineId, targetKcal))
-  const shortlist = ranked.slice(0, Math.min(3, ranked.length))
+  const shortlistSize = Math.min(ranked.length, Math.max(8, Math.ceil(ranked.length * 0.35)))
+  const shortlist = ranked.slice(0, shortlistSize)
   return shortlist[seededIndex(seed, shortlist.length)]
 }
 
-export function generatePlan(goal: Goal, seed: string, cuisineBySlot: Partial<Record<MealSlot, string>> = {}, targetKcal = goalProfiles[goal].targetKcal): Plan {
-  const pools = slots.map((slot) => candidatesFor(slot, cuisineBySlot[slot]))
+export function generatePlan(
+  goal: Goal,
+  seed: string,
+  cuisineBySlot: Partial<Record<MealSlot, string>> = {},
+  targetKcal = goalProfiles[goal].targetKcal,
+  avoidIds: Iterable<string> = [],
+): Plan {
+  const avoided = new Set(avoidIds)
+  const pools = slots.map((slot) => withoutIds(candidatesFor(slot, cuisineBySlot[slot]), avoided))
   const combinations = pools[0].flatMap((breakfast) => pools[1].flatMap((lunch) => pools[2].map((dinner) => ({ breakfast, lunch, dinner }))))
   const ranked = combinations.map((combo) => {
     const kcal = combo.breakfast.nutrition.kcal + combo.lunch.nutrition.kcal + combo.dinner.nutrition.kcal
@@ -85,7 +111,7 @@ export function generatePlan(goal: Goal, seed: string, cuisineBySlot: Partial<Re
     const score = -Math.abs(kcal - targetKcal) * 0.22 - Math.max(0, goalProfiles[goal].targetProtein - protein) * 1.4 + Math.min(fiber, 32) * 0.45 - Math.max(0, sodium - 2000) * 0.025 + cuisineBonus
     return { combo, score }
   }).sort((a, b) => b.score - a.score)
-  const shortlist = ranked.slice(0, Math.min(4, ranked.length))
+  const shortlist = ranked.slice(0, Math.min(24, ranked.length))
   const chosen = shortlist[seededIndex(`${seed}:${targetKcal}`, shortlist.length)].combo
   return { breakfast: chosen.breakfast.id, lunch: chosen.lunch.id, dinner: chosen.dinner.id }
 }

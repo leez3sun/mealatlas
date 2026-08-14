@@ -17,6 +17,22 @@ describe('meal planner', () => {
     expect(pickRecipe('lunch', 'balanced', 'x', 'thai').cuisineId).toBe('thai')
   })
 
+  it('never returns the current recipe when rerolling a one-recipe cuisine', () => {
+    const current = candidatesFor('lunch', 'thai')[0]
+    const next = pickRecipe('lunch', 'balanced', 'reroll', 'thai', current.id)
+    expect(next.id).not.toBe(current.id)
+  })
+
+  it('can hard-avoid every recipe in the current plan', () => {
+    const current = generatePlan('balanced', 'before')
+    const next = generatePlan('balanced', 'after', {}, 1800, Object.values(current))
+    expect(Object.values(next).every((id) => !Object.values(current).includes(id))).toBe(true)
+  })
+
+  it('offers a broad breakfast pool for repeated daily plans', () => {
+    expect(candidatesFor('breakfast').length).toBeGreaterThanOrEqual(10)
+  })
+
   it('falls back safely when a catalog-only cuisine has no recipe', () => {
     expect(candidatesFor('dinner', 'lu').length).toBeGreaterThan(0)
   })

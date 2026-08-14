@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import CuisineExplorer from './components/CuisineExplorer'
 import Icon from './components/Icon'
 import MealCard from './components/MealCard'
@@ -20,33 +20,56 @@ function App() {
   const [modified, setModified] = useState<Set<string>>(new Set())
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null)
-  const [rerollCount, setRerollCount] = useState(0)
+  const actionCount = useRef(0)
+  const recentRecipeIds = useRef<string[]>(Object.values(plan))
   const [toast, setToast] = useState<string | null>(null)
   const baseTotal = useMemo(() => aggregateNutrition(plan, modified), [plan, modified])
   const portionScale = targetKcal / baseTotal.kcal
   const total = useMemo(() => scaleNutrition(baseTotal, portionScale), [baseTotal, portionScale])
 
+  const nextSeed = (label: string) => {
+    actionCount.current += 1
+    const entropy = new Uint32Array(1)
+    window.crypto.getRandomValues(entropy)
+    return `${dateSeed}:${label}:${actionCount.current}:${entropy[0]}`
+  }
+
+  const rememberPlan = (nextPlan: Plan) => {
+    recentRecipeIds.current = [...Object.values(nextPlan), ...recentRecipeIds.current]
+      .filter((id, index, ids) => ids.indexOf(id) === index)
+      .slice(0, 18)
+  }
+
+  const makeFreshPlan = (nextGoal: Goal, label: string, nextCuisines: Partial<Record<MealSlot, string>>, nextTarget: number, currentPlan: Plan) => {
+    const nextPlan = generatePlan(nextGoal, nextSeed(label), nextCuisines, nextTarget, [...Object.values(currentPlan), ...recentRecipeIds.current])
+    rememberPlan(nextPlan)
+    return nextPlan
+  }
+
   const changeGoal = (next: Goal) => {
     setGoal(next)
     setTargetKcal(goalProfiles[next].targetKcal)
-    setPlan(generatePlan(next, `${dateSeed}:${rerollCount + 1}`, cuisineBySlot, goalProfiles[next].targetKcal))
+    setPlan((current) => makeFreshPlan(next, `goal:${next}`, cuisineBySlot, goalProfiles[next].targetKcal, current))
     setModified(new Set())
   }
 
   const regenerate = () => {
-    const next = rerollCount + 1
-    setRerollCount(next)
-    setPlan(generatePlan(goal, `${dateSeed}:full:${next}`, cuisineBySlot, targetKcal))
+    setPlan((current) => makeFreshPlan(goal, 'full', cuisineBySlot, targetKcal, current))
     setModified(new Set())
     showToast('已重新调好明日三餐')
   }
 
   const reroll = (slot: MealSlot) => {
     const current = plan[slot]
-    const nextCount = rerollCount + 1
-    const next = pickRecipe(slot, goal, `${dateSeed}:${slot}:${nextCount}`, cuisineBySlot[slot], current, targetKcal)
-    setRerollCount(nextCount)
-    setPlan((value) => ({ ...value, [slot]: next.id }))
+    const next = pickRecipe(slot, goal, nextSeed(`reroll:${slot}`), cuisineBySlot[slot], current, targetKcal, recentRecipeIds.current)
+    if (cuisineBySlot[slot] && next.cuisineId !== cuisineBySlot[slot]) {
+      setCuisineBySlot((value) => { const copy = { ...value }; delete copy[slot]; return copy })
+    }
+    setPlan((value) => {
+      const nextPlan = { ...value, [slot]: next.id }
+      rememberPlan(nextPlan)
+      return nextPlan
+    })
     setModified((value) => { const copy = new Set(value); copy.delete(current); return copy })
   }
 
@@ -54,8 +77,12 @@ function App() {
     const nextCuisine = { ...cuisineBySlot, [slot]: cuisineId }
     if (!cuisineId) delete nextCuisine[slot]
     setCuisineBySlot(nextCuisine)
-    const recipe = pickRecipe(slot, goal, `${dateSeed}:${slot}:cuisine:${cuisineId ?? 'all'}`, cuisineId, plan[slot], targetKcal)
-    setPlan((value) => ({ ...value, [slot]: recipe.id }))
+    const recipe = pickRecipe(slot, goal, nextSeed(`cuisine:${slot}:${cuisineId ?? 'all'}`), cuisineId, undefined, targetKcal, recentRecipeIds.current)
+    setPlan((value) => {
+      const nextPlan = { ...value, [slot]: recipe.id }
+      rememberPlan(nextPlan)
+      return nextPlan
+    })
   }
 
   const toggleModified = (id: string) => setModified((value) => {
@@ -82,7 +109,7 @@ function App() {
 
   const changeTargetKcal = (nextTarget: number) => {
     setTargetKcal(nextTarget)
-    setPlan(generatePlan(goal, `${dateSeed}:target:${nextTarget}`, cuisineBySlot, nextTarget))
+    setPlan((current) => makeFreshPlan(goal, `target:${nextTarget}`, cuisineBySlot, nextTarget, current))
     setModified(new Set())
     showToast(`已按 ${nextTarget} kcal 重新搭配三餐`)
   }

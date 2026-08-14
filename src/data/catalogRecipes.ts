@@ -159,12 +159,12 @@ const seeds: Seed[] = [
     macros: [468, 39, 29, 22, 6.2, 886], tags: ['酸香', '鸭肉', '广西菜'], allergens: ['大豆'], changes: ['鸭胸彻底去皮', '酸料先冲洗并不再额外加盐', '彩椒增至 200 g 增加维生素 C'],
   },
   {
-    cuisineId: 'hainan', slot: 'lunch', minutes: 48, profile: 'poultry', ingredients: '去皮鸡腿:180 g;糙米:70 g;黄瓜:120 g;番茄:100 g;姜:15 g;葱:15 g;低钠鸡汤:180 ml',
+    cuisineId: 'hainan', slot: 'breakfast', minutes: 48, profile: 'poultry', ingredients: '去皮鸡腿:180 g;糙米:70 g;黄瓜:120 g;番茄:100 g;姜:15 g;葱:15 g;低钠鸡汤:180 ml',
     steps: ['鸡腿与姜葱放入微沸水中浸煮 18 分钟，关火焖 8 分钟，确认熟透。', '糙米用撇去浮油的鸡汤煮熟，焖 10 分钟再松散。', '鸡肉切块，与黄瓜、番茄和鸡饭装盘，蘸汁单独少量使用。'],
     macros: [602, 44, 65, 20, 7.9, 624], tags: ['鸡饭', '浸煮', '海南菜'], allergens: [], changes: ['鸡腿去皮且鸡汤撇油', '白米换 70 g 糙米', '蘸汁减半并增加黄瓜番茄'],
   },
   {
-    cuisineId: 'hong-kong', slot: 'lunch', minutes: 34, profile: 'mixed', ingredients: '鲜虾仁:90 g;瘦猪肉末:70 g;云吞皮:60 g;全麦面:65 g;青菜:160 g;低钠高汤:450 ml;葱:10 g',
+    cuisineId: 'hong-kong', slot: 'breakfast', minutes: 34, profile: 'mixed', ingredients: '鲜虾仁:90 g;瘦猪肉末:70 g;云吞皮:60 g;全麦面:65 g;青菜:160 g;低钠高汤:450 ml;葱:10 g',
     steps: ['虾仁切丁与瘦肉末同向搅拌，包入 8 张云吞皮。', '高汤微沸，云吞煮至浮起后再煮 2 分钟；青菜烫熟。', '全麦面另锅煮熟沥水，加入高汤、云吞和青菜，撒葱花。'],
     macros: [578, 39, 72, 16, 8.4, 968], tags: ['汤面', '云吞', '港式'], allergens: ['甲壳类', '小麦'], changes: ['面条用全麦且控制 65 g', '高汤改低钠并与煮面水分开', '瘦肉虾仁比例提高，青菜增量'],
   },
@@ -244,7 +244,7 @@ const seeds: Seed[] = [
     macros: [642, 44, 78, 18, 7.9, 826], tags: ['海鲜', '米饭', '西班牙菜'], allergens: ['甲壳类', '软体类'], changes: ['短粒米减至 60 g', '橄榄油控制 5 g', '彩椒番茄合计增至 320 g'],
   },
   {
-    cuisineId: 'nordic', slot: 'lunch', minutes: 16, profile: 'fish', ingredients: '黑麦面包:70 g;烟熏三文鱼:90 g;希腊酸奶:60 g;黄瓜:100 g;萝卜:70 g;莳萝:8 g;柠檬:半个',
+    cuisineId: 'nordic', slot: 'breakfast', minutes: 16, profile: 'fish', ingredients: '黑麦面包:70 g;烟熏三文鱼:90 g;希腊酸奶:60 g;黄瓜:100 g;萝卜:70 g;莳萝:8 g;柠檬:半个',
     steps: ['希腊酸奶、莳萝和柠檬汁混合成抹酱。', '黑麦面包烤至边缘微脆，涂酸奶酱。', '铺黄瓜、萝卜和三文鱼，撒黑胡椒，立即食用。'],
     macros: [514, 33, 57, 18, 10.2, 986], tags: ['开放三明治', '鱼类', '北欧菜'], allergens: ['鱼', '小麦', '乳'], changes: ['烟熏三文鱼减至 65 g 控钠', '酸奶酱不额外加盐', '黄瓜萝卜增加到 220 g'],
   },
@@ -274,7 +274,7 @@ const seeds: Seed[] = [
     macros: [512, 41, 68, 9, 8.8, 574], tags: ['柑橘', '冷食', '秘鲁菜'], allergens: ['鱼'], changes: ['仅使用可靠来源的可生食级鱼', '不额外加油', '红薯和玉米各减量并加 150 g 生菜'],
   },
   {
-    cuisineId: 'middle-eastern', slot: 'lunch', minutes: 24, profile: 'legume', ingredients: '熟鹰嘴豆:170 g;芝麻酱:18 g;全麦皮塔:55 g;黄瓜:120 g;番茄:120 g;胡萝卜:80 g;柠檬:半个',
+    cuisineId: 'middle-eastern', slot: 'breakfast', minutes: 24, profile: 'legume', ingredients: '熟鹰嘴豆:170 g;芝麻酱:18 g;全麦皮塔:55 g;黄瓜:120 g;番茄:120 g;胡萝卜:80 g;柠檬:半个',
     steps: ['鹰嘴豆、芝麻酱、柠檬汁、蒜和 50 ml 水搅打顺滑。', '黄瓜、番茄和胡萝卜切成可蘸食的条或块。', '鹰嘴豆泥装盘，淋 2 g 橄榄油，配蔬菜和烤热的全麦皮塔。'],
     macros: [624, 24, 82, 23, 18.6, 612], tags: ['鹰嘴豆', '拼盘', '中东菜'], allergens: ['芝麻', '小麦'], changes: ['芝麻酱减至 10 g', '皮塔减至 40 g', '蔬菜增加到 400 g'],
   },
@@ -289,17 +289,17 @@ const seeds: Seed[] = [
     macros: [596, 28, 91, 14, 20.2, 582], tags: ['咖喱', '扁豆', '印度菜'], allergens: ['乳'], changes: ['油控制 3 g，不用酥油', '糙米减至 45 g', '菠菜增至 220 g，酸奶保留'],
   },
   {
-    cuisineId: 'japanese', slot: 'dinner', minutes: 30, profile: 'fish', ingredients: '鲑鱼:160 g;糙米饭:120 g;西兰花:160 g;胡萝卜:80 g;味噌:8 g;海带芽:6 g;豆腐:80 g',
+    cuisineId: 'japanese', slot: 'breakfast', minutes: 30, profile: 'fish', ingredients: '鲑鱼:160 g;糙米饭:120 g;西兰花:160 g;胡萝卜:80 g;味噌:8 g;海带芽:6 g;豆腐:80 g',
     steps: ['鲑鱼擦干，薄涂稀释味噌，烤箱 200°C 烤 10 至 12 分钟。', '西兰花和胡萝卜蒸熟；豆腐、海带芽加入 300 ml 热水。', '味噌用少量温汤化开后关火拌入，鱼、饭、蔬菜和汤分格装盘。'],
     macros: [628, 44, 62, 24, 10.1, 842], tags: ['定食', '烤鱼', '日本菜'], allergens: ['鱼', '大豆'], changes: ['味噌控制 8 g 且不再加盐', '糙米饭减至 100 g', '西兰花和胡萝卜增加到 300 g'],
   },
   {
-    cuisineId: 'korean', slot: 'lunch', minutes: 32, profile: 'mixed', ingredients: '瘦牛肉:100 g;糙米饭:120 g;菠菜:80 g;豆芽:100 g;胡萝卜:70 g;香菇:60 g;鸡蛋:1 个;韩式辣酱:8 g',
+    cuisineId: 'korean', slot: 'breakfast', minutes: 32, profile: 'mixed', ingredients: '瘦牛肉:100 g;糙米饭:120 g;菠菜:80 g;豆芽:100 g;胡萝卜:70 g;香菇:60 g;鸡蛋:1 个;韩式辣酱:8 g',
     steps: ['菠菜、豆芽分别焯熟，胡萝卜和香菇少油炒熟。', '瘦牛肉片快速煎熟，鸡蛋用不粘锅单面煎。', '糙米饭垫底，分区摆牛肉、蔬菜和鸡蛋，辣酱加水稀释后拌食。'],
     macros: [642, 40, 75, 21, 10.8, 922], tags: ['拌饭', '蔬菜', '韩国菜'], allergens: ['蛋', '大豆'], changes: ['糙米饭减至 100 g', '辣酱控制 5 g 并稀释', '蔬菜总量增加到 400 g'],
   },
   {
-    cuisineId: 'vietnamese', slot: 'lunch', minutes: 45, profile: 'poultry', ingredients: '去皮鸡胸:150 g;干米粉:65 g;豆芽:100 g;洋葱:60 g;青菜:120 g;香草:25 g;低钠鸡汤:500 ml',
+    cuisineId: 'vietnamese', slot: 'breakfast', minutes: 45, profile: 'poultry', ingredients: '去皮鸡胸:150 g;干米粉:65 g;豆芽:100 g;洋葱:60 g;青菜:120 g;香草:25 g;低钠鸡汤:500 ml',
     steps: ['鸡胸与姜、洋葱放汤中小火浸煮 15 分钟，取出切片。', '米粉另锅煮熟并冲去多余淀粉，豆芽和青菜烫熟。', '米粉、鸡肉和蔬菜装碗，冲入热汤，配青柠和香草。'],
     macros: [532, 40, 70, 10, 7.8, 836], tags: ['汤粉', '鸡肉', '越南菜'], allergens: [], changes: ['鸡汤撇油并使用低钠版', '干米粉减至 55 g', '豆芽青菜合计增至 300 g'],
   },
@@ -309,7 +309,7 @@ const seeds: Seed[] = [
     macros: [608, 36, 68, 23, 9.4, 1020], tags: ['汤面', '椰香', '叻沙'], allergens: ['甲壳类', '大豆'], changes: ['椰奶减至 30 ml', '叻沙酱减半并用香茅补香', '米粉减至 50 g，蔬菜增至 320 g'],
   },
   {
-    cuisineId: 'indonesian', slot: 'lunch', minutes: 34, profile: 'mixed', ingredients: '北豆腐:120 g;鸡蛋:1 个;土豆:100 g;豆角:100 g;卷心菜:100 g;豆芽:80 g;花生酱:15 g',
+    cuisineId: 'indonesian', slot: 'breakfast', minutes: 34, profile: 'mixed', ingredients: '北豆腐:120 g;鸡蛋:1 个;土豆:100 g;豆角:100 g;卷心菜:100 g;豆芽:80 g;花生酱:15 g',
     steps: ['土豆、豆角、卷心菜和豆芽分别蒸或焯熟。', '豆腐用不粘锅煎至两面金黄，鸡蛋煮熟切半。', '花生酱以温水、青柠汁和辣椒调稀，淋在蔬菜、豆腐和鸡蛋上。'],
     macros: [584, 29, 65, 25, 15.2, 638], tags: ['沙拉', '花生酱', '印尼菜'], allergens: ['花生', '大豆', '蛋'], changes: ['花生酱减至 10 g 并用水调稀', '豆腐不油炸，改不粘锅煎', '土豆减至 70 g，蔬菜增至 350 g'],
   },
